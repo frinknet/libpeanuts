@@ -3,7 +3,7 @@
 
 set -eo pipefail
 
-# THIS REPO
+# THIS IS THE BUILD REPO
 REPO="ghcr.io/frinknet/metabuild"
 IMAGE="${REPO##*/}"
 
@@ -18,7 +18,9 @@ if ! docker image inspect "$IMAGE" &>/dev/null; then
 fi
 
 # NOW USE IT
-if [ "$1" = "cli" ]; then
+if [ -z "$1" ]; then
+  exec docker run --rm -it -u $(id -u):$(id -g) -v "$PWD:/build" $IMAGE respond rebuild
+elif [ "$1" = "cli" ]; then
   shift
   exec docker run --rm -it -u $(id -u):$(id -g) -v "$PWD:/build" --entrypoint bash $IMAGE "$@"
 else

@@ -3,11 +3,12 @@ REM METABUILD - (c) 2025 FRINKnet & Friends - 0BSD
 
 setlocal enabledelayedexpansion
 
+REM THIS IS THE BUILD REPO
 set REPO=ghcr.io/frinknet/metabuild
 for %%i in ("%REPO%") do set IMAGE=metabuild
 set WORKDIR=%cd%
 
-REM Check for existing Docker image
+REM MAKE SURE WE HAVE A CONTAINER
 docker image inspect %IMAGE% >nul 2>&1
 if errorlevel 1 (
     REM Try to pull
@@ -20,8 +21,10 @@ if errorlevel 1 (
     )
 )
 
-REM Argument parsing: if %1 is "cli"
-if "%1"=="cli" (
+REM NOW USE IT
+if "%1"=="" (
+    docker run --rm -it -u %USERNAME%:%USERNAME% -v "%CD%:/build" %IMAGE% respond rebuild
+) else if "%1"=="cli" (
     shift
     docker run --rm -it -v "%WORKDIR%:/build" --entrypoint bash %IMAGE% %*
 ) else (
