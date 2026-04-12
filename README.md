@@ -8,7 +8,7 @@
 
 ```
 ❌ Typical: "Fix my JSON parser" → 3K tokens of hallucinated context
-✅ PEANUTS: Tree → "" → "User wants cJSON" → focused 200 token response
+✅ PEANUTS: Tree → "files avaiable" → "User is using cJSON needs a tweak" → focused 200 token response
 ```
 
 - **Thread-safe** (`thread_local` errors)
