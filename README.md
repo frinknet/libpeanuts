@@ -4,9 +4,9 @@
 
 ```
 Persona     → Who you are (Architect, Doctor, Rabbi)
-Environment → What you know (POSIX, codebase tree, docs)  
+Exposition  → What you know (POSIX, codebase tree, docs)
 Analysis    → How you think (pre-digested CoT injection)
-Negotiation → What user wants (exact intent)
+Needs       → What user wants (exact intent)
 Updates     → Last AI response (ground truth)
 Templated   → Expected output format
 ```
@@ -22,14 +22,14 @@ Templated   → Expected output format
 ```
 
 - **Thread-safe** (`thread_local` errors)
-- **Multi-API** (OpenAI, OpenRouter, custom endpoints)  
+- **Multi-API** (OpenAI, OpenRouter, custom endpoints)
 - **Zero-copy** error capture (`jsio_t` nodes)
 - **State mutation** between retries (swap `safety`, `analysis`)
 - **Pipe+curl** (no libcurl dep)
 
 # Why this is better than basic RAG + CoT
 
-Instead of just giving the AI information you are telling it what it thinks before it starts to respond which launches its trajectory. You have two Assistant messages (Analysis and Updates) and two User messages (Environment and Negotiation) allong with a System message AND a formatted response template. This gives you a cleaner version of inteaction allowing you to not only insert context but help the AI undestand what it thinks about it BEFORE it starts to infer a response.
+Instead of just giving the AI information you are telling it what it thinks before it starts to respond which launches its trajectory. You have two Assistant messages (Analysis and Updates) and two User messages (Exposition and Needs) allong with a System message AND a formatted response template. This gives you a cleaner version of inteaction allowing you to not only insert context but help the AI undestand what it thinks about it BEFORE it starts to infer a response.
 
 Also, the safety function can be used to respond with your own message or trigger more interaction loops. Instead of the usual tool calling we replace things with concised microformats espcified in templates so that you can parse them and do whatever you need. This is itended too replace more precarious formmat of the past with something that is both very simple and VERY extensible. This means that you can always guarantee the thing does what its supposed to do and you don't need endless code trying  to figure out MCP providers. (although we might try to add that back later...)
 
@@ -87,7 +87,7 @@ bool ai_readwrite(peanuts_t *nut, char **res) {
     char hunch[1024];
     int line_num;
     char comment[1024];
-    
+
     while (line) {
         if (sscanf(line, "READ|%127[^|]|%1023[^\n]", filename, hunch) == 2) {
             // Read file, inject into updates
@@ -96,14 +96,14 @@ bool ai_readwrite(peanuts_t *nut, char **res) {
                 char *contents = read_file_contents(f);  // Your impl
                 free((char*)nut->updates);
                 nut->updates = malloc(4096);
-                snprintf(nut->updates, 4096, 
-                    "# %s (hunch: %s)\n```\n%s\n```\n", 
+                snprintf(nut->updates, 4096,
+                    "# %s (hunch: %s)\n```\n%s\n```\n",
                     filename, hunch, contents);
                 free(contents);
                 fclose(f);
                 return 0;  // Continue loop
             }
-        } 
+        }
         else if (sscanf(line, "%d|%127[^|]|%1023[^\n]", &line_num, filename, comment) == 3) {
             // Add TODO comment to file
             add_todo_comment(filename, line_num, comment);  // Your impl
@@ -172,7 +172,7 @@ Frees `model`, `endpoint`, `gatekey`, `ctx`.
 nutmsg(ctx, nut)  → genesis
     ↓ nutsay("ask")
 chain: genesis ← tlk(say) ← res(nutjob)
-    ↓ nutsay("next") 
+    ↓ nutsay("next")
 chain grows → nutfix() compacts → nutsay continues
 nutclr(chain)     → frees everything
 ```

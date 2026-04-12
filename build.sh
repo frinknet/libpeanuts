@@ -17,12 +17,8 @@ if ! docker image inspect "$IMAGE" &>/dev/null; then
   fi
 fi
 
-# NOW USE IT
-if [ -z "$1" ]; then
-  exec docker run --rm -it -u $(id -u):$(id -g) -v "$PWD:/build" $IMAGE respond rebuild
-elif [ "$1" = "cli" ]; then
-  shift
-  exec docker run --rm -it -u $(id -u):$(id -g) -v "$PWD:/build" --entrypoint bash $IMAGE "$@"
-else
-  exec docker run --rm -it -u $(id -u):$(id -g) -v "$PWD:/build" $IMAGE "$@"
-fi
+# NOW USE IT...
+exec docker run --rm -it \
+  -u $(id -u):$(id -g) \
+  -e PRJ="${PWD##*/}" \
+  -v "$PWD:/build" $IMAGE "$@"
