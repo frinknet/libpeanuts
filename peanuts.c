@@ -378,7 +378,7 @@ char *nutjob(nutmeg_t *ctx, peanuts_t *nut) {
 	while (i--) {
 		res = __nut_send(ctx, nut);
 
-		if (nut->safety(nut, res)) return res;
+		if (nut->safety(nut, &res)) return res;
 
 		free(res);
 

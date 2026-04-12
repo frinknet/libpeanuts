@@ -25,7 +25,7 @@ typedef struct peanuts {
 	const char *templated;    // what to return template
 
 	// Test of it did the right thing
-	bool (*safety)(struct peanuts *nut, char *res);
+	bool (*safety)(struct peanuts *nut, char **res);
 } peanuts_t;
 
 nutmeg_t *nutmeg(const char *model, const char *endpoint, const char *gatekey);
