@@ -1,0 +1,3 @@
+[submodule "lib/jaclibc"]
+	path = lib/jaclibc
+	url = git@github.com:frinknet/JACLibc.git
