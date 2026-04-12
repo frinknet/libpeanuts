@@ -33,6 +33,23 @@ Instead of just giving the AI information you are telling it what it thinks befo
 
 Also, the safety function can be used to respond with your own message or trigger more interaction loops. Instead of the usual tool calling we replace things with concised microformats espcified in templates so that you can parse them and do whatever you need. This is itended too replace more precarious formmat of the past with something that is both very simple and VERY extensible. This means that you can always guarantee the thing does what its supposed to do and you don't need endless code trying  to figure out MCP providers. (although we might try to add that back later...)
 
+The biggest usecase is in our up and coming AI CODING framework. But you should find it useful everywhere AI can be used.
+
+# ROADMAP
+
+- [x] Basic P.E.A.N.U.T.S. looped verification.
+- [x] Basic P.E.A.N.U.T.S. chat conversation.
+- [x] Custom tool calling within safety function.
+- [ ] Language bindings for Rust
+- [ ] Language bindings for Python
+- [ ] Language bindings for Javascript
+- [ ] Language bindings for PHP
+- [ ] Language bindings for Lua
+- [ ] Language bindings for Java
+- [ ] Language bindings for Zig
+- [ ] Language bindings for C#
+- [ ] Advanced RAG with embedding
+- [ ] Integrated memories system
 
 # Quick Start
 
