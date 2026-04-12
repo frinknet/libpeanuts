@@ -6,13 +6,16 @@
 #include <jsio.h>
 #include "peanuts.h"
 
+#define NUT_CMD_LEN 2048
+#define NUT_ARGV_LEN 128
+
 static thread_local jsio_t *__nut_err = NULL;
 
 static inline int __nut_args(const char* cmd, char*** argv) {
 	if (!cmd) return -1;
 
-	char *wrk = malloc(MAX_CMD_LEN);
-	char **res = malloc(MAX_ARGV_LEN * sizeof(char*));
+	char *wrk = malloc(NUT_CMD_LEN);
+	char **res = malloc(NUT_ARGV_LEN * sizeof(char*));
 
 	if (!wrk || !res) {
 		free(wrk);
@@ -28,7 +31,7 @@ static inline int __nut_args(const char* cmd, char*** argv) {
 
 	res[cnt++] = dst;
 
-	while (*src && dst < wrk + MAX_CMD_LEN - 1) {
+	while (*src && dst < wrk + NUT_CMD_LEN - 1) {
 		if (*src == '\\' && src[1]) {
 			if (in_sq && src[1] != '\'') *dst++ = *src++;
 			else if (in_dq && src[1] != '\"') *dst++ = *src++;
@@ -48,7 +51,7 @@ static inline int __nut_args(const char* cmd, char*** argv) {
 				*dst++ = '\0';
 				res[cnt++] = dst;
 
-				if (cnt >= MAX_ARGV_LEN - 1) break;
+				if (cnt >= NUT_ARGV_LEN - 1) break;
 			}
 
 			src++;
@@ -207,7 +210,7 @@ static inline const char *__nut_call(nutmeg_t *ctx, peanuts_t *nut) {
 	const char *analysis    = __nut_prep( nut->analysis);
 	const char *negotiation = __nut_prep( nut->negotiation);
 	const char *updates     = __nut_prep( nut->updates);
-	const char *templated   = __nut_prep( nut->templated);
+	const char *templates   = __nut_prep( nut->templates);
 
 	size_t len = 64;
 
@@ -218,19 +221,19 @@ static inline const char *__nut_call(nutmeg_t *ctx, peanuts_t *nut) {
 	len += strlen(analysis);
 	len += strlen(negotiation);
 	len += strlen(updates);
-	len += strlen(templated);
+	len += strlen(templates);
 
 	char *call = malloc(len);
 
 	if (!call) return NULL;
 
-	sprintf(call, fmt, ctx->model, persona, environment, analysis, negotiation, updates, templated, ctx->temp, ctx->tokens);
+	sprintf(call, fmt, ctx->model, persona, environment, analysis, negotiation, updates, templates, ctx->temp, ctx->tokens);
 	free(persona);
 	free(environment);
 	free(analysis);
 	free(negotiation);
 	free(updates);
-	free(templated);
+	free(templates);
 
 	return (const char*)call;
 }
@@ -241,7 +244,7 @@ static inline size_t __nut_read(char **buf, size_t *len, FILE *s, size_t *max) {
 		*max = 128;
 		*buf = malloc(*max);
 
-		if (!*buf) die("Out of memory.");
+		if (!*buf) exit(127);
 	}
 
 	size_t beg = *len;
@@ -407,4 +410,93 @@ void nutout(nutmeg_t *ctx) {
 	free((char *)ctx->endpoint);
 	free((char *)ctx->gatekey);
 	free(ctx);
+}
+
+nutmsg_t *nutmsg(nutmeg_t *ctx, peanuts_t *nut) {
+	nutmsg_t *msg = malloc(sizeof(nutmsg_t));
+
+	msg->ctx = ctx;
+	msg->nut = nut;
+
+	return msg;
+}
+
+void nutclr(nutmsg_t *msg) {
+	while (msg) {
+		nutmsg_t *tmp = msg->prev;
+
+		free(msg->text);
+		free(msg);
+
+		msg = tmp;
+	}
+}
+
+bool nutyes(peanuts_t *nut, char **res) {
+	(void)nut;
+	(void)res;
+
+	return true;
+}
+
+nutmsg_t *nutfix(nutmsg_t *msg, nutmeg_t *ctx, peanuts_t *nut) {
+	int i = 0;
+	size_t len = 0;
+	char *chat =  NULL;
+	nutmsg_t *cur = msg;
+
+	while (cur->prev && ++i) {
+		len += strlen(cur->text) + 14;
+
+		char *tmp = malloc(len);
+
+		len = snprintf(tmp, len, "%s%s:\n%s\n\n", chat, cur->self ? "USER" : "ASSISTANT", cur->text);
+
+		free(chat);
+
+		chat = tmp;
+
+		cur = cur->prev;
+	}
+
+	if (i / 2 > nut->tries) {
+		peanuts_t shrink = {
+			.persona = "You compact conversations without loosing their escence.",
+			.environment = chat,
+			.analysis = "So we need to shrink this to around 1000-2000 tokens.",
+			.negotiation = "Yes. But we don't want to lose the important points.",
+			.updates = "Okay so I'm free to change the turns as long as I keep the focused.",
+			.templates = "Respond with a compat conversation keeping the general turn taking.",
+			.safety = nutyes
+		};
+		nutmsg_t newmsg = nutmsg(ctx, nut);
+
+		newmsg->self = true;
+		newmsg->text = nutjob(ctx, shrink);
+
+		nutclr(msg);
+
+		msg = newmsg;
+	}
+
+	free(chat);
+
+	nut->updates = msg->text;
+
+	return msg;
+}
+
+nutmsg_t *nutsay(nutmsg_t *msg, char *say) {
+	nutmeg_t *ctx = msg->ctx;
+	peanuts_t *nut = msg->nut;
+	nutmsg_t *tlk = nutmsg(ctx, nut);
+	nutmsg_t *res = nutmsg(ctx, nut);
+
+	tlk->prev = msg;
+	tlk->self = true;
+	tlk->text = strdup(say);
+	res->prev = nutfix(tlk, ctx, nut);
+	res->text = nutjob(ctx, nut);
+
+	return res;
 }
