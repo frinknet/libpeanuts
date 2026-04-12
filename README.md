@@ -103,14 +103,65 @@ Because `**res` is a pointer pointer, you can do things like rewrite the respons
 
 You can also do things like nesting the calls or rewriting and even giving  it a different safety on the next go round. The safety is your side of processing what is given by the AI.
 
-## Easy tiny API
+## API Reference
 
 ```c
 nutmeg_t *nutmeg(const char *model, const char *endpoint, const char *gatekey);
-char *nutjob(nutmeg_t *ctx, peanuts_t *nut);  // Runs tries loop
-char *nutbad(void);  // Thread-local error string (caller frees)
-void nutout(nutmeg_t *ctx);  // Cleanup
 ```
+Creates configured API context. Sets surgical defaults: 300s timeout, 9K tokens, 10 retries, 2s pause, 0.3 temp.
+
+```c
+char *nutjob(nutmeg_t *ctx, peanuts_t *nut);
+```
+Fires `peanuts_t` at LLM via `ctx`. Retries `tries` times until `safety(nut, &res)` passes. **Returns allocated string (caller frees).** NULL on final failure.
+
+```c
+char *nutbad(void);
+```
+Thread-local error from last `nutjob()` failure. **Caller frees.** `jsio_t` node preserved across retries.
+
+```c
+bool nutyes(peanuts_t *nut, char **res);
+```
+Default safety - always accepts. Use for testing or permissive flows.
+
+```c
+nutmsg_t *nutmsg(nutmeg_t *ctx, peanuts_t *nut);
+```
+Allocates bare message node. **Set `->text`, `->self`, `->prev` manually.** `nutclr()` expects owned `text`.
+
+```c
+nutmsg_t *nutsay(nutmsg_t *prev, const char *say);
+```
+Appends user turn (`strdup(say)`), calls `nutfix()` compaction, gets AI response via `nutjob()`. Returns newest node.
+
+```c
+nutmsg_t *nutfix(nutmsg_t *chain, nutmeg_t *ctx, peanuts_t *nut);
+```
+Serializes chain → `chat`. If turns > `tries`, compacts via LLM → fresh chain. Frees `chat`.
+
+```c
+void nutclr(nutmsg_t *chain);
+```
+Frees entire chain + all owned `text` pointers. Walks `prev` to root.
+
+```c
+void nutout(nutmeg_t *ctx);
+```
+Frees `model`, `endpoint`, `gatekey`, `ctx`.
+
+## Conversation Flow
+
+```
+nutmix(ctx, nut)  → genesis
+    ↓ nutsay("ask")
+chain: genesis ← tlk(say) ← res(nutjob)
+    ↓ nutsay("next") 
+chain grows → nutfix() compacts → nutsay continues
+nutclr(chain)     → frees everything
+```
+
+**Ownership:** `strdup(say)` + `nutjob()` → `nutclr()` perfect. No leaks.
 
 **peanuts_t.safety** → `bool safety(peanuts_t *nut, char **res)`
 
