@@ -2,7 +2,7 @@
 
 **Surgical AI prompt engineering library with context injection + structured output validation.**
 
-## NO HALUCINATIONS ALLOWED
+## NO HALLUCINATIONS ALLOWED
 
 **Beats RAG:** Structural context (trees, metrics) > semantic soup. Verified reasoning paths.
 
