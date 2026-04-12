@@ -153,7 +153,7 @@ Frees `model`, `endpoint`, `gatekey`, `ctx`.
 ## Conversation Flow
 
 ```
-nutmix(ctx, nut)  → genesis
+nutmsg(ctx, nut)  → genesis
     ↓ nutsay("ask")
 chain: genesis ← tlk(say) ← res(nutjob)
     ↓ nutsay("next") 
