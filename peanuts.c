@@ -206,34 +206,34 @@ static inline const char *__nut_prep(const char *txt) {
 static inline const char *__nut_call(nutmeg_t *ctx, peanuts_t *nut) {
 	const char *fmt   = __nut_json(ctx->endpoint);
 	const char *persona     = __nut_prep( nut->persona);
-	const char *exposition  = __nut_prep( nut->exposition);
+	const char *evidence    = __nut_prep( nut->evidence);
 	const char *analysis    = __nut_prep( nut->analysis);
-	const char *needs       = __nut_prep( nut->needs);
+	const char *nudging     = __nut_prep( nut->nudging);
 	const char *updates     = __nut_prep( nut->updates);
-	const char *templates   = __nut_prep( nut->templates);
+	const char *turnout     = __nut_prep( nut->turnout);
 
 	size_t len = 64;
 
 	len += strlen(fmt);
 	len += strlen(ctx->model);
 	len += strlen(persona);
-	len += strlen(exposition);
+	len += strlen(evidence);
 	len += strlen(analysis);
-	len += strlen(needs);
+	len += strlen(nudging);
 	len += strlen(updates);
-	len += strlen(templates);
+	len += strlen(turnout);
 
 	char *call = malloc(len);
 
 	if (!call) return NULL;
 
-	sprintf(call, fmt, ctx->model, persona, exposition, analysis, needs, updates, templates, ctx->temp, ctx->tokens);
+	sprintf(call, fmt, ctx->model, persona, evidence, analysis, nudging, updates, turnout, ctx->temp, ctx->tokens);
 	free((void*)persona);
-	free((void*)exposition);
+	free((void*)evidence);
 	free((void*)analysis);
-	free((void*)needs);
+	free((void*)nudging);
 	free((void*)updates);
-	free((void*)templates);
+	free((void*)turnout);
 
 	return (const char*)call;
 }
@@ -402,11 +402,11 @@ char *nutjob(nutmeg_t *ctx, peanuts_t *nut) {
 
 	// Make sure the nut is good before we try to crack it
 	if (!nut->persona)      nut->persona      = strdup("You are a helful assistant.");
-	if (!nut->exposition)   nut->exposition   = strdup("Respond with a concise but coomplete answer.");
+	if (!nut->evidence)     nut->evidence     = strdup("Respond with a concise but coomplete answer.");
 	if (!nut->analysis)     nut->analysis     = strdup("Got it. What do you want me to do?");
-	if (!nut->needs)        nut->needs        = strdup("Help me understand this better.");
+	if (!nut->nudging)      nut->nudging      = strdup("Help me understand this better.");
 	if (!nut->updates)      nut->updates      = strdup("Okay. So I need to think through this before I respond.");
-	if (!nut->templates)    nut->templates    = strdup("Respond with a concise but coomplete answer.");
+	if (!nut->turnout)      nut->turnout      = strdup("Respond with a concise but coomplete answer.");
 
 	// Loop as many tries as allowd
 	while (i--) {
@@ -486,11 +486,11 @@ nutmix_t *nutfix(nutmix_t **msg, nutmeg_t *ctx, peanuts_t *nut) {
 	if (i > ctx->tries) {
 		peanuts_t shrink = {
 			.persona     = "You compact conversations without loosing their escence.",
-			.exposition  = chat,
+			.evidence    = chat,
 			.analysis    = "So we need to shrink this to around 1000-2000 tokens.",
-			.needs       = "Yes. But we don't want to lose the important points.",
+			.nudging     = "Yes. But we don't want to lose the important points.",
 			.updates     = "Okay so I'm free to change the turns as long as I keep the focused.",
-			.templates   = "Respond with a compat conversation keeping the general turn taking.",
+			.turnout     = "Respond with a compat conversation keeping the general turn taking.",
 		};
 		nutmix_t *newmsg = nutmix(ctx, nut);
 
@@ -504,7 +504,7 @@ nutmix_t *nutfix(nutmix_t **msg, nutmeg_t *ctx, peanuts_t *nut) {
 		*msg = newmsg;
 	}
 
-	nut->needs = chat;
+	nut->nudging = chat;
 
 	return *msg;
 }

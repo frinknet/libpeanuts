@@ -9,11 +9,11 @@
 // ONESHOT REQUEST
 typedef struct peanuts {
 	const char *persona;      // what role the AI plays
-	const char *exposition;   // what the AI should know
+	const char *evidence;     // what the AI should know
 	const char *analysis;     // what the AI should think
-	const char *needs;        // what the USER asked for
+	const char *nudging;      // what the USER asks for
 	const char *updates;      // what the AI responded
-	const char *templates;    // what to return template
+	const char *turnout;      // how the AI should respond
 
 	// Test of it did the right thing
 	bool (*safety)(struct peanuts *nut, char **res);
