@@ -1,4 +1,6 @@
-package libPEANUTS
+// (c) 2026 FRINKnet & Friends – MIT licence
+
+package libpeanuts
 
 import (
 	"encoding/json"

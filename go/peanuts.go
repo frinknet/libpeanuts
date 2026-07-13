@@ -11,7 +11,7 @@
 // Turnout  → Expected output format
 //
 // Safety callback surgically validates output (JSON schema, tool calls).
-package libPEANUTS
+package libpeanuts
 
 import (
 	"bytes"
