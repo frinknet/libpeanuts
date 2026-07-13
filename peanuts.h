@@ -21,7 +21,26 @@ typedef struct peanuts {
 	void *data; // what you want to rember betwen loops
 } peanuts_t;
 
+// USAGE TRACKING
+typedef struct nutuse {
+	long   inTokens;    // standard prompt tokens (accumulated, auto-subtracted from cached)
+	long   cached;      // cache hit tokens (accumulated)
+	long   outTokens;   // completion tokens (accumulated)
+	long   calls;       // API calls (accumulated)
+	double inCost;      // cost per 1M input tokens (set by user)
+	double cacheCost;   // cost per 1M cache hit tokens (set by user, usually ~10% of inCost)
+	double outCost;     // cost per 1M output tokens (set by user)
+	double callsCost;   // cost per API call (set by user for aggregators)
+	double spend;       // actual cost from provider if returned (accumulated)
+	const char *inPath;     // JSON path for total input tokens (NULL=auto)
+	const char *cachePath;  // JSON path for cached tokens (NULL=auto)
+	const char *outPath;    // JSON path for output tokens (NULL=auto)
+	const char *spendPath;  // JSON path for cost (NULL="cost")
+} nutuse_t;
+
 // BASIC SETTINGS
+#define NUTUSE_COST(nu) ((nu).inTokens / 1000000.0 * (nu).inCost + (nu).cached / 1000000.0 * (nu).cacheCost + (nu).outTokens / 1000000.0 * (nu).outCost + (nu).calls * (nu).callsCost)
+
 typedef struct nutmeg {
 	const char *model;      // AI model name
 	const char *endpoint;   // AI endpoint url
@@ -31,6 +50,8 @@ typedef struct nutmeg {
 	int        tries;       // tries
 	int        pause;       // ms
 	double     temp;        // temp
+
+	nutuse_t   usage;       // token tracking (accumulated)
 } nutmeg_t;
 
 // CHAT CONVERSATION
@@ -45,6 +66,7 @@ typedef struct nutmix {
 // NUTMEG LIFECYCLE
 nutmeg_t *nutmeg(const char *model, const char *endpoint, const char *gatekey);
 void nutout(nutmeg_t *ctx);
+nutuse_t nutuse(nutmeg_t *ctx);
 
 // PEANUTS CALLING
 char *nutjob(nutmeg_t *ctx, peanuts_t *nut);

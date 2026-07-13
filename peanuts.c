@@ -342,6 +342,42 @@ static inline char *__nut_send(nutmeg_t *ctx, peanuts_t *nut) {
 
 	char *cont = strdup(res->value.str);
 
+	// Parse usage tokens from response
+	jsio_t *usage = js_resolve(json, "usage");
+
+	ctx->usage.calls++;
+
+	if (usage && usage->type == JS_TYPE_OBJECT) {
+		const char *inpPath  = ctx->usage.inPath;
+		const char *outPath  = ctx->usage.outPath;
+		const char *cchPath  = ctx->usage.cachePath;
+
+		// Auto-detect paths if not overridden
+		if (!inpPath)
+			inpPath = (strstr(ctx->endpoint, "/v1/messages") || strstr(ctx->endpoint, "/v1/responses"))
+				? "input_tokens" : "prompt_tokens";
+		if (!outPath)
+			outPath = (strstr(ctx->endpoint, "/v1/messages") || strstr(ctx->endpoint, "/v1/responses"))
+				? "output_tokens" : "completion_tokens";
+		if (!cchPath)
+			cchPath = (strstr(ctx->endpoint, "/v1/messages") || strstr(ctx->endpoint, "/v1/responses"))
+				? "cache_read_input_tokens" : "prompt_tokens_details.cached_tokens";
+
+		jsio_t *inp   = js_resolve(usage, inpPath);
+		jsio_t *out   = js_resolve(usage, outPath);
+		jsio_t *cch   = js_resolve(usage, cchPath);
+		long totalIn  = (inp && inp->type == JS_TYPE_NUMBER) ? (long)inp->value.num : 0;
+		long cached   = (cch && cch->type == JS_TYPE_NUMBER) ? (long)cch->value.num : 0;
+		ctx->usage.inTokens  += totalIn - cached;
+		ctx->usage.cached    += cached;
+		if (out && out->type == JS_TYPE_NUMBER) ctx->usage.outTokens += (long)out->value.num;
+
+		// Parse actual cost if provider returns it (OpenRouter, Portkey, DeepInfra, etc.)
+		const char *costPath = ctx->usage.spendPath ? ctx->usage.spendPath : "cost";
+		jsio_t *cost = js_resolve(usage, costPath);
+		if (cost && cost->type == JS_TYPE_NUMBER) ctx->usage.spend += cost->value.num;
+	}
+
 	js_delete(json);
 	free(recv);
 
@@ -365,6 +401,7 @@ nutmeg_t *nutmeg(const char *model, const char *endpoint, const char *gatekey) {
 	}
 
 	// defaults
+	ctx->usage = (nutuse_t){0}; // zero everything (paths = NULL, counts = 0)
 	ctx->timeout = 300;
 	ctx->tokens  = 9000;
 	ctx->tries   = 10;
@@ -384,6 +421,12 @@ char *nuterr(void) {
 	__nut_err = NULL;
 
 	return str;
+}
+
+nutusage_t nutusage(nutmeg_t *ctx) {
+	if (!ctx) return (nutusage_t){0};
+
+	return ctx->usage;
 }
 
 void nutout(nutmeg_t *ctx) {
