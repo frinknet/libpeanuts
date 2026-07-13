@@ -14,7 +14,7 @@ Turnout     → Expected output format
 
 ## NO HALLUCINATIONS ALLOWED
 
-**Beats RAG:** Structural context (trees, metrics) > semantic soup. Verified reasoning paths.
+**Beats RAG:** Structural context (trees, metrics) > semantic soup. Inject workflow verified reasoning paths.
 
 ```
 ❌ Typical: "Fix my JSON parser" → 3K tokens of hallucinated context
@@ -29,7 +29,7 @@ Turnout     → Expected output format
 
 # Why this is better than basic RAG + CoT
 
-Instead of just giving the AI information you are telling it what it thinks before it starts to respond which launches its trajectory. You have two Assistant messages (Analysis and Updates) and two User messages (Evidencvidence and Nudging) allong with a System message AND a formatted response template. This gives you a cleaner version of inteaction allowing you to not only insert context but help the AI undestand what it thinks about it BEFORE it starts to infer a response.
+Instead of just giving the AI information you are telling it what it thinks before it starts to respond which launches its trajectory. You have two Assistant messages (Analysis and Updates) and two User messages (Evidence and Nudging) allong with a System message AND a formatted response template. This gives you a cleaner version of inteaction allowing you to not only insert context but help the AI undestand what it thinks about it BEFORE it starts to infer a response.
 
 Also, the safety function can be used to respond with your own message or trigger more interaction loops. Instead of the usual tool calling we replace things with concised microformats sepcified in Turnout so that you can parse them and do whatever you need. This is itended too replace more precarious formmat of the past with something that is both very simple and VERY extensible. This means that you can always guarantee the thing does what its supposed to do and you don't need endless code trying  to figure out MCP providers. (although we might try to add that back later...)
 
@@ -40,16 +40,27 @@ The biggest usecase is in our up and coming AI CODING framework. But you should 
 - [x] Basic P.E.A.N.U.T.S. looped verification.
 - [x] Basic P.E.A.N.U.T.S. chat conversation.
 - [x] Custom tool calling within safety function.
-- [ ] Language bindings for Rust
-- [ ] Language bindings for Python
-- [ ] Language bindings for Javascript
-- [ ] Language bindings for PHP
-- [ ] Language bindings for Lua
-- [ ] Language bindings for Java
-- [ ] Language bindings for Zig
-- [ ] Language bindings for C#
-- [ ] Advanced RAG with embedding
-- [ ] Integrated memories system
+- [x] Cost tracking / reporting
+- [ ] Advanced MCP injection
+
+## Native Translations
+
+- [x] Go
+- [ ] Rust
+- [ ] Python
+- [ ] PHP
+- [ ] JavaScript
+- [ ] Ruby
+- [ ] Java
+- [ ] C#
+
+## FFI Bindings
+
+- [ ] Lua (use C API & LuaJIT FFI)
+- [ ] Zig (use `@importC`)
+- [ ] Swift
+- [ ] Julia (use `ccall`)
+- [ ] R (use Rcpp)
 
 # Quick Start
 
