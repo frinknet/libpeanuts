@@ -2,4 +2,3 @@
 module github.com/frinknet/libPEANUTS
 
 go 1.22
-
