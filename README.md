@@ -47,7 +47,6 @@ Since every language is native each has their own quick start guide. Click any l
 - [x] Basic P.E.A.N.U.T.S. chat conversation.
 - [x] Custom tool calling within safety function.
 - [x] Cost tracking / reporting
-- [ ] Advanced MCP injection
 
 ## Native Implementations
 
@@ -69,3 +68,14 @@ Since every language is native each has their own quick start guide. Click any l
 - [ ] Julia (use `ccall`)
 - [ ] R (use Rcpp)
 
+# Other Libraries
+
+libPEANUTS is the core automation loop for a lot of AI tooling. However for more standard CODING cases you might look at how we use it. This is powerful but somewhat esoteric for many not familiar with CoT trajectory that makes these things work.
+
+- [libVARIANCE](/frinknet/libVARIANCE) - Fine grained, focused, coding and deep precision editing.
+- [libINTERACT](/frinknet/libINTERACT) - Social dialog for long term conversation like DMs.
+- [libRESEARCH](/frinknet/libRESEARCH) - Deep multi-turn research projects and analytic reporting.
+- [libTHINKING](/frinknet/libTHINKING) - AI + deductive reasoning for true logic and critical thinking.
+- [libGENERATE](/frinknet/libGENERATE) - Complex multi-step generation and iterative prompting system.
+
+NOTE: Some of test are private while we work out the kinks. Much mre to come.
