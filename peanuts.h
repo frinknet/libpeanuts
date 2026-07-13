@@ -8,15 +8,17 @@
 
 // ONESHOT REQUEST
 typedef struct peanuts {
-	const char *persona;      // what role the AI plays
-	const char *evidence;     // what the AI should know
-	const char *analysis;     // what the AI should think
-	const char *nudging;      // what the USER asks for
-	const char *updates;      // what the AI responded
-	const char *turnout;      // how the AI should respond
+	const char *persona;  // what role the AI plays
+	const char *evidence; // what the AI should know
+	const char *analysis; // what the AI should think
+	const char *nudging;  // what the USER asks for
+	const char *updates;  // what the AI responded
+	const char *turnout;  // how the AI should respond
 
 	// Test of it did the right thing
 	bool (*safety)(struct peanuts *nut, char **res);
+
+	void *data; // what you want to rember betwen loops
 } peanuts_t;
 
 // BASIC SETTINGS

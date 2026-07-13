@@ -374,10 +374,10 @@ nutmeg_t *nutmeg(const char *model, const char *endpoint, const char *gatekey) {
 	return ctx;
 }
 
-char *nutbad(void) {
-	if (!__nut_err) return strdup("unknown error");
+char *nuterr(void) {
+	if (!__nut_err) return "unknown error";
 
-	char *str = strdup(__nut_err->value.str);
+	char *str = __nut_err->value.str;
 
 	js_delete(__nut_err);
 
