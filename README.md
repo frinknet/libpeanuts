@@ -18,7 +18,7 @@ Turnout     → Expected output format
 
 ```
 ❌ Typical: "Fix my JSON parser" → 3K tokens of hallucinated context
-✅ PEANUTS: Tree → "files avaiable" → "User is using cJSON needs a tweak" → focused 200 token response
+✅ PEANUTS: Tree → "files avaiable" → "I see they are using cJSON and it needs a tweak" → focused 200 token response
 ```
 
 - **Thread-safe** (`thread_local` errors)
