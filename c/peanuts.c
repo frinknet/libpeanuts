@@ -401,7 +401,7 @@ nutmeg_t *nutmeg(const char *model, const char *endpoint, const char *gatekey) {
 	}
 
 	// defaults
-	ctx->usage = (nutuse_t){0}; // zero everything (paths = NULL, counts = 0)
+	ctx->usage = (nutuse_t){0};
 	ctx->timeout = 300;
 	ctx->tokens  = 9000;
 	ctx->tries   = 10;
@@ -411,7 +411,7 @@ nutmeg_t *nutmeg(const char *model, const char *endpoint, const char *gatekey) {
 	return ctx;
 }
 
-char *nuterr(void) {
+char *nutbad(void) {
 	if (!__nut_err) return "unknown error";
 
 	char *str = __nut_err->value.str;
@@ -423,8 +423,8 @@ char *nuterr(void) {
 	return str;
 }
 
-nutusage_t nutusage(nutmeg_t *ctx) {
-	if (!ctx) return (nutusage_t){0};
+nutuse_t nutusage(nutmeg_t *ctx) {
+	if (!ctx) return (nutuse_t){0};
 
 	return ctx->usage;
 }
