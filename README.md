@@ -73,9 +73,10 @@ Since every language is native each has their own quick start guide. Click any l
 libPEANUTS is the core automation loop for a lot of AI tooling. However for more standard CODING cases you might look at how we use it. This is powerful but somewhat esoteric for many not familiar with CoT trajectory that makes these things work.
 
 - [libVARIANCE](/frinknet/libVARIANCE) - Fine grained, focused, coding and deep precision editing.
-- [libINTERACT](/frinknet/libINTERACT) - Social dialog for long term conversation like DMs.
-- [libRESEARCH](/frinknet/libRESEARCH) - Deep multi-turn research projects and analytic reporting.
-- [libTHINKING](/frinknet/libTHINKING) - AI + deductive reasoning for true logic and critical thinking.
-- [libGENERATE](/frinknet/libGENERATE) - Complex multi-step generation and iterative prompting system.
+- [libINTERACT](/frinknet/libINTERACT) - Humanized dialog and memory for long term conversations.
+- [libTHINKING](/frinknet/libTHINKING) - Deductive reasoning for true logic and critical thinking.
+- [libRESEARCH](/frinknet/libRESEARCH) - Deep research and analytic beyond the usual suspects.
+- [libGENSTATE](/frinknet/libGENSTATE) - Multi-step complex generation and iterative prompting system.
+- [libTRIGGERS](/frinknet/libTRIGGERS) - Evented AI workflows for busy people
 
 NOTE: Some of test are private while we work out the kinks. Much mre to come.
