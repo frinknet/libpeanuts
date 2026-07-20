@@ -101,7 +101,7 @@ You can also do things like nesting the calls or rewriting and even giving  it a
 ## API Reference
 
 ```c
-nutmeg_t *nutmeg(const char *model, const char *endpoint, const char *gatekey);
+nutmeg_t *nutmeg(const char *model, const char *endpoint, const char *apikey);
 ```
 Creates configured API context. Sets surgical defaults: 300s timeout, 9K tokens, 10 retries, 2s pause, 0.3 temp.
 
@@ -143,7 +143,7 @@ Frees entire chain + all owned `text` pointers. Walks `prev` to root.
 ```c
 void nutout(nutmeg_t *ctx);
 ```
-Frees `model`, `endpoint`, `gatekey`, `ctx`.
+Frees `model`, `endpoint`, `apikey`, `ctx`.
 
 ## Conversation Flow
 

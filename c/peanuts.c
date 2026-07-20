@@ -272,12 +272,12 @@ static inline char *__nut_send(nutmeg_t *ctx, peanuts_t *nut) {
 	pid_t pid = 0;
 
 	// TODO: we should make this use  libcurl or similar
-	if (ctx->gatekey) {
+	if (ctx->apikey) {
 		snprintf(cmd, sizeof(cmd),
 			"curl -s --no-fail --connect-timeout 5 --max-time %d -X POST %s "
 			"-H 'Content-Type: application/json' "
 			"-H 'Authorization: Bearer %s' "
-			"--data-binary @-", ctx->timeout, ctx->endpoint, ctx->gatekey);
+			"--data-binary @-", ctx->timeout, ctx->endpoint, ctx->apikey);
 	} else {
 		snprintf(cmd, sizeof(cmd),
 			"curl -s --fail --connect-timeout 5 --max-time %d -X POST %s "
@@ -385,16 +385,16 @@ static inline char *__nut_send(nutmeg_t *ctx, peanuts_t *nut) {
 }
 
 // NUTMEG LIFECYCLE
-nutmeg_t *nutmeg(const char *model, const char *endpoint, const char *gatekey) {
+nutmeg_t *nutmeg(const char *model, const char *endpoint, const char *apikey) {
 	nutmeg_t *ctx = malloc(sizeof(nutmeg_t));
 
 	// set the MEG
 	ctx->model    = strdup(model);
 	ctx->endpoint = strdup(endpoint);
-	ctx->gatekey  = strdup(gatekey);
+	ctx->apikey  = strdup(apikey);
 
 	// make sure it took
-	if (!ctx->model || !ctx->endpoint || !ctx->gatekey) {
+	if (!ctx->model || !ctx->endpoint || !ctx->apikey) {
 		nutout(ctx);
 
 		return NULL;
@@ -432,9 +432,9 @@ nutuse_t nutusage(nutmeg_t *ctx) {
 void nutout(nutmeg_t *ctx) {
 	if (!ctx) return;
 
-	free((char *)ctx->model);
-	free((char *)ctx->endpoint);
-	free((char *)ctx->gatekey);
+	free((void*)ctx->model);
+	free((void*)ctx->endpoint);
+	free((void*)ctx->apikey);
 	free(ctx);
 }
 
@@ -460,7 +460,7 @@ char *nutjob(nutmeg_t *ctx, peanuts_t *nut) {
 		if (!nut->safety || nut->safety(nut, &res)) return res;
 
 		// Otherwise, we get ready to try again
-		free((void*)res);
+		free(res);
 		usleep((useconds_t)ctx->pause * 1000);
 	}
 

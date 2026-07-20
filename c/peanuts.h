@@ -8,12 +8,12 @@
 
 // ONESHOT REQUEST
 typedef struct peanuts {
-	const char *persona;  // what role the AI plays
-	const char *evidence; // what the AI should know
-	const char *analysis; // what the AI should think
-	const char *nudging;  // what the USER asks for
-	const char *updates;  // what the AI responded
-	const char *turnout;  // how the AI should respond
+	char *persona;  // what role the AI plays
+	char *evidence; // what the AI should know
+	char *analysis; // what the AI should think
+	char *nudging;  // what the USER asks for
+	char *updates;  // what the AI responded
+	char *turnout;  // how the AI should respond
 
 	// Test of it did the right thing
 	bool (*safety)(struct peanuts *nut, char **res);
@@ -44,7 +44,7 @@ typedef struct nutuse {
 typedef struct nutmeg {
 	const char *model;      // AI model name
 	const char *endpoint;   // AI endpoint url
-	const char *gatekey;    // API gatekey
+	const char *apikey;     // API apikey
 	int        timeout;     // seconds
 	int        tokens;      // tokens
 	int        tries;       // tries
@@ -64,7 +64,7 @@ typedef struct nutmix {
 } nutmix_t;
 
 // NUTMEG LIFECYCLE
-nutmeg_t *nutmeg(const char *model, const char *endpoint, const char *gatekey);
+nutmeg_t *nutmeg(const char *model, const char *endpoint, const char *apikey);
 void nutout(nutmeg_t *ctx);
 nutuse_t nutuse(nutmeg_t *ctx);
 

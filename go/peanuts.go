@@ -70,7 +70,7 @@ func (nu Nutuse) Cost() float64 {
 type Nutmeg struct {
 	Model    string   // AI model name
 	Endpoint string   // AI endpoint url
-	Gatekey  string   // API gatekey
+	APIKey   string   // API access token
 	Timeout  int      // seconds
 	Tokens   int      // max output tokens
 	Tries    int      // max retries
@@ -109,11 +109,11 @@ func Nuterr() string {
 
 // NewNutmeg creates a configured API context with surgical defaults:
 // 300s timeout, 9K tokens, 10 retries, 2s pause, 0.3 temp.
-func NewNutmeg(model, endpoint, gatekey string) *Nutmeg {
+func NewNutmeg(model, endpoint, apikey string) *Nutmeg {
 	return &Nutmeg{
 		Model:    model,
 		Endpoint: endpoint,
-		Gatekey:  gatekey,
+		APIKey:   apikey,
 		Timeout:  300,
 		Tokens:   9000,
 		Tries:    10,
@@ -262,8 +262,8 @@ func send(ctx *Nutmeg, nut *Peanuts) (string, error) {
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	if ctx.Gatekey != "" {
-		req.Header.Set("Authorization", "Bearer "+ctx.Gatekey)
+	if ctx.APIKey != "" {
+		req.Header.Set("Authorization", "Bearer "+ctx.APIKey)
 	}
 
 	resp, err := client.Do(req)
